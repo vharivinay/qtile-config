@@ -1,3 +1,74 @@
+#+TITLE: QTILE CONFIG
+#+DESCRIPTION: Personal Qtile WM Config
+#+DATE: June 28, 2022
+#+AUTHOR: Harivinay V (github.com/vharivinay)
+#+PROPERTY: header-args :tangle config.py
+#+auto_tangle: t
+#+STARTUP: showeverything inlineimages
+
+* Table of Contents :toc:
+- [[#about][ABOUT]]
+  - [[#qtile][QTILE]]
+- [[#banner][BANNER]]
+- [[#imports][IMPORTS]]
+  - [[#main-modules][MAIN MODULES]]
+  - [[#additional-modules][ADDITIONAL MODULES]]
+- [[#define-mod-key][DEFINE MOD KEY]]
+- [[#lazy-functions][LAZY FUNCTIONS]]
+- [[#basic-keybindings][BASIC KEYBINDINGS]]
+  - [[#define-keys-array][DEFINE KEYS ARRAY]]
+  - [[#super--keys][SUPER + KEYS]]
+  - [[#super--shift--keys][SUPER + SHIFT + KEYS]]
+  - [[#qtile-layout-keys][QTILE LAYOUT KEYS]]
+  - [[#qtile-change-window-focus][QTILE CHANGE WINDOW FOCUS]]
+  - [[#qtile-resize-window][QTILE RESIZE WINDOW]]
+  - [[#qtile-layout-controls][QTILE LAYOUT CONTROLS]]
+- [[#groups][GROUPS]]
+  - [[#groups-list][GROUPS LIST]]
+  - [[#group-names][GROUP NAMES]]
+  - [[#group-labels][GROUP LABELS]]
+  - [[#group-layouts][GROUP LAYOUTS]]
+  - [[#group-objects][GROUP OBJECTS]]
+  - [[#group-navigation][GROUP NAVIGATION]]
+- [[#appearence][APPEARENCE]]
+  - [[#colors][COLORS]]
+  - [[#basic-theme][BASIC THEME]]
+  - [[#layout-configuration][LAYOUT CONFIGURATION]]
+- [[#qtile-bar-screen][QTILE BAR (Screen)]]
+  - [[#mouse-callbacks-for-click-events][MOUSE CALLBACKS FOR CLICK EVENTS]]
+  - [[#initiate-widget-defaults][INITIATE WIDGET DEFAULTS]]
+  - [[#define-qtile-bar-glyphs][DEFINE QTILE BAR GLYPHS]]
+  - [[#widget-list][WIDGET LIST]]
+  - [[#app-menu-widget][APP MENU WIDGET]]
+  - [[#group-box-widget-workspaces][GROUP BOX WIDGET (WORKSPACES)]]
+  - [[#window-name-widget][WINDOW NAME WIDGET]]
+  - [[#current-layout-icon][CURRENT LAYOUT ICON]]
+  - [[#caps-and-num-lock-indicator][CAPS AND NUM LOCK INDICATOR]]
+  - [[#system-moniter-widget][SYSTEM MONITER WIDGET]]
+  - [[#calendar-and-clock-widget][CALENDAR AND CLOCK WIDGET]]
+  - [[#brightness-indicator][BRIGHTNESS INDICATOR]]
+  - [[#system-tray][SYSTEM TRAY]]
+  - [[#power-button-widget][POWER BUTTON WIDGET]]
+  - [[#setup-widgets-and-qtile-bar][SETUP WIDGETS AND QTILE BAR]]
+- [[#mouse-interaction-for-floating-windows][MOUSE INTERACTION FOR FLOATING WINDOWS]]
+- [[#dynamic-groups-settings][DYNAMIC GROUPS SETTINGS]]
+  -  [[#assign-applications-to-a-specific-groups][ASSIGN APPLICATIONS TO A SPECIFIC GROUPS]]
+- [[#setup-one-time--startup-functions][SETUP ONE TIME / STARTUP FUNCTIONS]]
+- [[#cursor-behavior][CURSOR BEHAVIOR]]
+- [[#floating-window-rules][FLOATING WINDOW RULES]]
+- [[#finish-up][FINISH UP]]
+
+* ABOUT
+This is a personal Qtile WM config with a floating rounded qtile bar. Control the corner radius using a compositor.
+
+#+CAPTION: Desktop Scrot
+#+ATTR_HTML: :alt Desktop Scrot :title Desktop Scrot :align left :width 800
+[[/home/harivinay/.config/qtile/scrot-desktop.png]]
+
+** QTILE
+Qtile is a simple, small extensible window manager for linux written and configured entirely in Python. It is easy to write additional configuration for layouts, widgets and built-in commands. Qtile is a free and open-source software distributed under the MIT license.
+* BANNER
+#+BEGIN_SRC python
 #######################################################
 #    ____  __  _ __        ______            _____
 #   / __ \/ /_(_) /__     / ____/___  ____  / __(_)___ _
@@ -11,7 +82,13 @@
 # Date: 14 March, 2022
 # Last Modified: 28 June, 2022
 #######################################################
+#+END_SRC
 
+
+* IMPORTS
+** MAIN MODULES
+Default modules necessary to make a working config
+#+begin_src python
 # IMPORTS
 import os
 import re
@@ -22,18 +99,27 @@ from libqtile import layout, bar, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, Rule
 from libqtile.command import lazy
 from libqtile.widget import Spacer
-
+#+end_src
+** ADDITIONAL MODULES
+#+begin_src python
 # Custom Widget
 import keyIndicator
 # Import for mouse callbacks
 from libqtile import qtile
-
+#+end_src
+* DEFINE MOD KEY
+A modifier key is a key on a computer's keyboard that's only used in conjunction with another key. Modifier keys are often used with other keys to perform computer keyboard shortcuts and other commands
+#+begin_src python
 # mod4 or mod = super key
 mod = "mod4"
 mod1 = "alt"
 mod2 = "control"
 home = os.path.expanduser("~")
 
+#+end_src
+* LAZY FUNCTIONS
+Functions to move windows to neighboring workspaces
+#+begin_src python
 # Functions to move windows to neighboring workspaces
 @lazy.function
 def window_to_prev_group(qtile):
@@ -47,24 +133,37 @@ def window_to_next_group(qtile):
     if qtile.currentWindow is not None:
         i = qtile.groups.index(qtile.currentGroup)
         qtile.currentWindow.togroup(qtile.groups[i + 1].name)
+#+end_src
+* BASIC KEYBINDINGS
+Keybindings here are separated into different lists based on their function or key combination.
+All the different lists are then concatenated to the main keybindings list called "keys". This is a personal choice and done for my convenience. All the keybindings can be defined in directly in the "keys" list if that is desirable.
 
+=NOTE:= Most of the keybindings are in sxhkd file. These are qtile specific basic keybindings which involve mostly qtile controls and navigation.
+** DEFINE KEYS ARRAY
+#+begin_src python
 # Define keys array
 keys = []
-
+#+end_src
+** SUPER + KEYS
+#+BEGIN_SRC python
 # SUPER + KEYS
 super_keys = [
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "q", lazy.window.kill()),
         ]
 keys.extend(super_keys)
-
+#+END_SRC
+** SUPER + SHIFT + KEYS
+#+BEGIN_SRC python
 # SUPER + SHIFT + KEYS
 super_shift_keys = [
     Key([mod, "shift"], "q", lazy.window.kill()),
     Key([mod, "shift"], "r", lazy.restart()),
     ]
 keys.extend(super_shift_keys)
-
+#+END_SRC
+** QTILE LAYOUT KEYS
+#+BEGIN_SRC python
 # QTILE LAYOUT KEYS
 qtile_layout_keys = [
     Key([mod], "n", lazy.layout.normalize()),
@@ -72,6 +171,9 @@ qtile_layout_keys = [
     ]
 keys.extend(qtile_layout_keys)
 
+#+END_SRC
+** QTILE CHANGE WINDOW FOCUS
+#+BEGIN_SRC python
 # QTILE CHANGE FOCUS
 qtile_change_focus = [
     Key([mod], "Up", lazy.layout.up()),
@@ -84,7 +186,9 @@ qtile_change_focus = [
     Key([mod], "l", lazy.layout.right()),
     ]
 keys.extend(qtile_change_focus)
-
+#+END_SRC
+** QTILE RESIZE WINDOW
+#+BEGIN_SRC python
 # RESIZE QTILE WINDOW
 qtile_resize_window = [
 Key(
@@ -149,7 +253,9 @@ Key(
     ),
     ]
 keys.extend(qtile_resize_window)
-
+#+END_SRC
+** QTILE LAYOUT CONTROLS
+#+BEGIN_SRC python
 # QTILE LAYOUT CONTROLS
 qtile_layout_controls= [
     # FLIP LAYOUT FOR MONADTALL/MONADWIDE
@@ -174,10 +280,18 @@ qtile_layout_controls= [
     ]
 
 keys.extend(qtile_layout_controls)
-
+#+END_SRC
+* GROUPS
+A group is a container for a bunch of windows, analogous to "workspaces" in other window managers. Each client window managed by the window manager belongs to exactly one group. The groups config file variable should be initialized to a list of DGroup objects.
+** GROUPS LIST
+Define empty groups to populate later with group names, labels and layout types.
+#+BEGIN_SRC python
 # CREATE EMPLT GROUPS LIST
 groups = []
-
+#+END_SRC
+** GROUP NAMES
+Create a list containing group names.
+#+BEGIN_SRC python
 # CREATE A LIST CONTAINING GROUP NAMES
 group_names = [
     "1",
@@ -188,7 +302,10 @@ group_names = [
     "6",
     "7",
 ]
-
+#+END_SRC
+** GROUP LABELS
+Create a list containing group labels.
+#+BEGIN_SRC python
 # CREATE A LIST CONTAINING GROUP LABELS
 group_labels = [
     "",
@@ -199,7 +316,10 @@ group_labels = [
     "",
     "",
 ]
-
+#+END_SRC
+** GROUP LAYOUTS
+Create a list defining layouts for each group.
+#+BEGIN_SRC python
 # CREATE A LIST DEFINING LAYOUTS FOR EACH GROUP
 group_layouts = [
     "monadtall",
@@ -210,7 +330,10 @@ group_layouts = [
     "monadtall",
     "monadtall",
 ]
-
+#+END_SRC
+** GROUP OBJECTS
+Create a DGroup object for each group.
+#+BEGIN_SRC python
 # CREATE A DGROUP OBJECT FOR EACH GROUP
 for i in range(len(group_names)):
     groups.append(
@@ -220,7 +343,10 @@ for i in range(len(group_names)):
             label=group_labels[i],
         )
     )
-
+#+END_SRC
+** GROUP NAVIGATION
+Additional Key bindings for navigation within groups.
+#+BEGIN_SRC python
 # ADDITIONAL KEYBINDINGS FOR NAVIGATION WITHIN GROUPS
 for i in groups:
     keys.extend(
@@ -244,7 +370,12 @@ for i in groups:
             ),
         ]
     )
+#+END_SRC
 
+* APPEARENCE
+This section includes configuration of the GUI for qtile bar, windows and widgets. And mouse callbacks for some interaction with the bar. Colors and theme  both inspired by the Nebula Project, Link: https://github.com/Barbaross93/Nebula
+** COLORS
+#+BEGIN_SRC python
 # DEFINE COLORS
 def init_colors():
     return [
@@ -268,6 +399,11 @@ def init_colors():
 
 colors = init_colors()
 
+#+END_SRC
+
+** BASIC THEME
+Initiate default theme for all layouts.
+#+BEGIN_SRC python
 # INITIATE DEFAULT THEME
 def init_layout_theme():
     return {
@@ -279,7 +415,11 @@ def init_layout_theme():
 
 
 layout_theme = init_layout_theme()
-
+#+END_SRC
+** LAYOUT CONFIGURATION
+My layouts follow mostly default settings initialized in [[BASIC THEME]]. Here, only 4 layouts are activated, for more layouts refer to qtile documentation.
+Link: http://docs.qtile.org/en/stable/manual/ref/layouts.html
+#+BEGIN_SRC python
 # LIST OF LAYOUTS
 layouts = [
     # MASTER STACK VERTICAL SPLIT
@@ -291,7 +431,13 @@ layouts = [
     # MAXIMUM WIDTH
     layout.Max(**layout_theme),
 ]
-
+#+END_SRC
+* QTILE BAR (Screen)
+Qtile has a built in bar that is very extensible. Here in this config I have chosen to go with a floating rounded style bar at the top of the screen with widgets suitable for my needs.
+For more details on how to customize, check out the documentation on qtile's website.
+Link: https://docs.qtile.org/en/latest/manual/config/screens.html
+** MOUSE CALLBACKS FOR CLICK EVENTS
+#+BEGIN_SRC python
 # MOUSE CALLBACKS FOR CLICK EVENTS
 # spawn calendar widget
 def openCalendar():
@@ -314,20 +460,35 @@ def openMenu():
 def powerMenu():
     qtile.cmd_spawn("archlinux-logout")
 
+#+END_SRC
+** INITIATE WIDGET DEFAULTS
+#+BEGIN_SRC python
+
 #INITIATE WIDGET DEFAULTS
 def init_widgets_defaults():
     return dict(font="Noto Sans Bold", fontsize=12, padding=2, background=colors[2], foreground=colors[14])
 
 
 widget_defaults = init_widgets_defaults()
-
+#+END_SRC
+** DEFINE QTILE BAR GLYPHS
+#+BEGIN_SRC python
 # DEFINE QTILE BAR GLYPHS
 left = ""
 right = ""
+#+END_SRC
+** WIDGET LIST
+Make empty widget list and add widgets to it. Here, separate widget lists have been created for different sections of the qtile bar as a personal choice. Widgets can be directly defined in 'init_widgets_list' function if desirable.
 
+=NOTE:= The individual widget lists also contain spacer widget for spacing after the widget except for the first widget ([[APP MENU WIDGET.]] ) which contains both before and after spacer.
+
+#+BEGIN_SRC python
 # INITIATE EMPTY WIDGET LIST
 main_widgets_list = []
-
+#+END_SRC
+** APP MENU WIDGET
+Open an app menu using rofi.
+#+BEGIN_SRC python
 # APP MENU WIDGET
 app_menu_widget = [
         widget.Spacer(
@@ -346,7 +507,9 @@ app_menu_widget = [
     ]
 
 main_widgets_list.extend(app_menu_widget)
-
+#+END_SRC
+** GROUP BOX WIDGET (WORKSPACES)
+#+BEGIN_SRC python
 # GRUOP BOX WIDGET (WORKSPACES)
 group_box_widget = [
         widget.TextBox(
@@ -395,7 +558,9 @@ group_box_widget = [
     ]
 
 main_widgets_list.extend(group_box_widget)
-
+#+END_SRC
+** WINDOW NAME WIDGET
+#+BEGIN_SRC python
 # WINDOW NAME WIDGET
 window_name_widget = [
         widget.TextBox(
@@ -429,7 +594,10 @@ window_name_widget = [
     ]
 
 main_widgets_list.extend(window_name_widget)
-
+#+END_SRC
+** CURRENT LAYOUT ICON
+On click changes the current window layout
+#+BEGIN_SRC python
 # CURRENT LAYOUT ICON
 current_layout_icon_widget = [
         widget.TextBox(
@@ -458,7 +626,13 @@ current_layout_icon_widget = [
     ]
 
 main_widgets_list.extend(current_layout_icon_widget)
+#+END_SRC
+** CAPS AND NUM LOCK INDICATOR
+This widget is modified from the deafult to show icons instead of text. Widget file is in the root directory.
 
+Link: [[./keyIndicator.py][Key Indicator]]
+
+#+BEGIN_SRC python
 # CAPS AND NUM LOCK INDICATOR
 key_indicator_widget = [
         widget.TextBox(
@@ -487,7 +661,10 @@ key_indicator_widget = [
     ]
 
 main_widgets_list.extend(key_indicator_widget)
-
+#+END_SRC
+** SYSTEM MONITER WIDGET
+On click brings up htop, a system monitering utility
+#+BEGIN_SRC python
 # SYSTEM MONITERING WIDGET
 system_moniter_widget = [
         widget.TextBox(
@@ -587,7 +764,10 @@ system_moniter_widget = [
     ]
 
 main_widgets_list.extend(system_moniter_widget)
-
+#+END_SRC
+** CALENDAR AND CLOCK WIDGET
+On click pops up a simple calendar utility.
+#+BEGIN_SRC python
 # CALENDER AND CLOCK
 calendar_clock_widget = [
          widget.TextBox(
@@ -630,7 +810,10 @@ calendar_clock_widget = [
     ]
 
 main_widgets_list.extend(calendar_clock_widget)
-
+#+END_SRC
+** BRIGHTNESS INDICATOR
+=NOTE:= Brightness widget and systemtray widgets share left and right glyphs.
+#+BEGIN_SRC python
 # BRIGHTNESS INDICATOR
 brightness_widget = [
         widget.TextBox(
@@ -671,7 +854,9 @@ brightness_widget = [
     ]
 
 main_widgets_list.extend(brightness_widget)
-
+#+END_SRC
+*** BATTERY INDICATOR
+#+BEGIN_SRC python
 # BATTERY INDICATOR
 battery_widget = [
         widget.Battery(
@@ -688,7 +873,9 @@ battery_widget = [
     ]
 
 main_widgets_list.extend(battery_widget)
-
+#+END_SRC
+** SYSTEM TRAY
+#+BEGIN_SRC python
 # SYSTEM TRAY
 system_tray = [
         widget.Systray(background=colors[14], icon_size=22, padding=4),
@@ -707,7 +894,10 @@ system_tray = [
     ]
 
 main_widgets_list.extend(system_tray)
-
+#+END_SRC
+** POWER BUTTON WIDGET
+On click opens logout promt from betterlockscreen.
+#+BEGIN_SRC python
 # POWER BUTTON
 power_button = [
         widget.TextBox(
@@ -742,7 +932,9 @@ power_button = [
     ]
 
 main_widgets_list.extend(power_button)
-
+#+END_SRC
+** SETUP WIDGETS AND QTILE BAR
+#+BEGIN_SRC python
 # SETUP WIDGETS & QTILE BAR
 def init_widgets_list():
     prompt = "{0}@{1}: ".format(os.environ["USER"], socket.gethostname())
@@ -778,7 +970,9 @@ def init_screens():
 
 
 screens = init_screens()
-
+#+END_SRC
+* MOUSE INTERACTION FOR FLOATING WINDOWS
+#+BEGIN_SRC python
 # MOUSE INTERACTION FOR FLOATING WINDOWS
 mouse = [
     Drag(
@@ -791,11 +985,17 @@ mouse = [
         [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
     ),
 ]
-
+#+END_SRC
+* DYNAMIC GROUPS SETTINGS
+I have not explored this section of qtile. So, it remains from default config
+#+BEGIN_SRC python
 # REMAIN FROM DEFAULT CONFIG
 dgroups_key_binder = None
 dgroups_app_rules = []
-
+#+END_SRC
+**  ASSIGN APPLICATIONS TO A SPECIFIC GROUPS
+Use xprop fo find  the value of WM_CLASS(STRING) -> First field is sufficient.
+#+BEGIN_SRC python
 # ASSIGN APPLICATIONS TO GROUPS
 @hook.subscribe.client_new
 def assign_app_group(client):
@@ -830,7 +1030,9 @@ def assign_app_group(client):
 
 
 main = None
-
+#+END_SRC
+* SETUP ONE TIME / STARTUP FUNCTIONS
+#+BEGIN_SRC python
 # ONE TIME / STARTUP FUNCTIONS
 @hook.subscribe.startup_once
 def start_once():
@@ -852,17 +1054,27 @@ def set_floating(window):
     ):
         window.floating = True
 
+
+#+END_SRC
+* CURSOR BEHAVIOR
+#+BEGIN_SRC python
 # CURSOR BEHAVIOR
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
+#+END_SRC
 
+
+
+* FLOATING WINDOW RULES
+Run the utility of `xprop` to see the wm class and name of an X client.
+#+begin_src python
 # FLOATING WINDOW RULES
 floating_types = ["notification", "toolbar", "splash", "dialog"]
 
 floating_layout = layout.Floating(
     float_rules=[
-        *layout.Floating.default_float_rules,
+        ,*layout.Floating.default_float_rules,
         Match(wm_class="confirmreset"),  # gitk
         Match(wm_class="makebranch"),  # gitk
         Match(wm_class="maketag"),  # gitk
@@ -892,10 +1104,13 @@ floating_layout = layout.Floating(
     fullscreen_border_width=0,
     border_width=0,
 )
-
+#+end_src
+* FINISH UP
+#+BEGIN_SRC python
 # FINISH UP
 auto_fullscreen = True
 
 focus_on_window_activation = "focus"  # or smart
 
 wmname = "LG3D"
+#+END_SRC

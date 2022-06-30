@@ -20,7 +20,7 @@
 # SOFTWARE.
 # Modified:
 #   By: Harivinay
-#   Github: https://www.github.com/m87k452b
+#   Github: https://www.github.com/vharivinay
 #   Date: Jan 31, 2022
 #   Modifications: To show icons for lock status
 

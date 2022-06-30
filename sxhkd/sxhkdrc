@@ -138,7 +138,7 @@ super + shift + m
 
 #Launch DOOM Emacs
 super + shift + c
-  emacsclient -c -a 'emacs'
+  emacsclient -c -a "emacs"
 #################################################################
 #  KB_GROUP CONTROL + ALT KEYS
 #################################################################
@@ -181,15 +181,14 @@ ctrl + alt + i
 
 #arcolinux-logout
 ctrl + alt + q
-    arcolinux-logout
+    archlinux-logout
 
 #arcolinux-logout
 ctrl + alt + k
-     arcolinux-logout
-
+    archlinux-logout
 #arcolinux-logout
 ctrl + alt + l
-     arcolinux-logout
+    archlinux-logout
 
 #Pamac-manager
 ctrl + alt + p
