@@ -63,7 +63,7 @@ This is a personal Qtile WM config with a floating rounded qtile bar. Control th
 
 #+CAPTION: Desktop Scrot
 #+ATTR_HTML: :alt Desktop Scrot :title Desktop Scrot :align left :width 800
-[[/home/harivinay/.config/qtile/scrot-desktop.png]]
+[[https://github.com/vharivinay/qtile-config/blob/main/scrot-desktop.png]]
 
 ** QTILE
 Qtile is a simple, small extensible window manager for linux written and configured entirely in Python. It is easy to write additional configuration for layouts, widgets and built-in commands. Qtile is a free and open-source software distributed under the MIT license.
