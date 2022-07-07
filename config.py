@@ -192,12 +192,12 @@ group_names = [
 # CREATE A LIST CONTAINING GROUP LABELS
 group_labels = [
     "",
-    "",
-    "",
     "",
+    "",
+    "",
     "",
-    "",
     "",
+    "",
 ]
 
 # CREATE A LIST DEFINING LAYOUTS FOR EACH GROUP
@@ -800,25 +800,13 @@ dgroups_app_rules = []
 @hook.subscribe.client_new
 def assign_app_group(client):
     d = {}
-    d[group_names[0]] = [
-        "Chromium",
-        "chromium"
-    ]
-    d[group_names[1]] = [
-        "codium",
-        "Codium"
-    ]
-    d[group_names[2]] = [
-        "emacs"
-        "Emacs"
-    ]
-    d[group_names[3]] = []
+    d[group_names[0]] = ["Chromium", "chromium"]
+    d[group_names[1]] = ["Alacritty", "Alacritty"]
+    d[group_names[2]] = ["emacs""Emacs"]
+    d[group_names[3]] = ["vscodium", "VSCodium"]
     d[group_names[4]] = []
     d[group_names[5]] = ["Vlc", "vlc"]
-    d[group_names[6]] = [
-        "firefox",
-        "Firefox"
-    ]
+    d[group_names[6]] = ["Navigator", "firefox"]
 
     wm_class = client.window.get_wm_class()[0]
 
