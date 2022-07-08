@@ -30,6 +30,7 @@
   - [[#group-layouts][GROUP LAYOUTS]]
   - [[#group-objects][GROUP OBJECTS]]
   - [[#group-navigation][GROUP NAVIGATION]]
+- [[#scratch-pad][SCRATCH PAD]]
 - [[#appearence][APPEARENCE]]
   - [[#colors][COLORS]]
   - [[#basic-theme][BASIC THEME]]
@@ -371,6 +372,30 @@ for i in groups:
         ]
     )
 #+END_SRC
+* SCRATCH PAD
+ScratchPad adds a (by default) invisible group to Qtile. That group is used as a place for currently not visible windows spawned by a DropDown configuration.
+
+=Note:= that if the window is set to not floating, it is detached from DropDown and ScratchPad, and a new process is spawned next time the DropDown is set visible.
+#+BEGIN_SRC python
+# SCRATCH PAD CONFIG
+groups.append(ScratchPad('scratchpad',[
+            DropDown('term', 'alacritty', width=0.4, height=0.6, x=0.3, y=0.2, opacity=1),
+            DropDown('mixer', 'pavucontrol', width=0.4, height=0.6, x=0.3, y=0.2, opacity=1),
+            DropDown('files', 'dolphin', width=0.8, height=0.8, x=0.1, y=0.1, opacity=1)
+        ])
+    )
+#+END_SRC
+*** SCRATCH PAD CONTROLS
+#+BEGIN_SRC python
+# SCRATCH PAD KEYBINDINGS
+scratch_keys = [
+    Key([mod2], "1", lazy.group["scratchpad"].dropdown_toggle("term")),
+    Key([mod2], "2", lazy.group["scratchpad"].dropdown_toggle("files")),
+    Key([mod2], "3", lazy.group["scratchpad"].dropdown_toggle("mixer")),
+    ]
+keys.extend(scratch_keys)
+#+END_SRC
+
 
 * APPEARENCE
 This section includes configuration of the GUI for qtile bar, windows and widgets. And mouse callbacks for some interaction with the bar. Colors and theme  both inspired by the Nebula Project, Link: https://github.com/Barbaross93/Nebula
@@ -1002,7 +1027,7 @@ def assign_app_group(client):
     d = {}
     d[group_names[0]] = ["Chromium", "chromium"]
     d[group_names[1]] = ["Alacritty", "Alacritty"]
-    d[group_names[2]] = ["emacs""Emacs"]
+    d[group_names[2]] = ["emacs","Emacs"]
     d[group_names[3]] = ["vscodium", "VSCodium"]
     d[group_names[4]] = []
     d[group_names[5]] = ["Vlc", "vlc"]

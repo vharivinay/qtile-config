@@ -245,6 +245,22 @@ for i in groups:
         ]
     )
 
+# SCRATCH PAD CONFIG
+groups.append(ScratchPad('scratchpad',[
+            DropDown('term', 'alacritty', width=0.4, height=0.6, x=0.3, y=0.2, opacity=1),
+            DropDown('mixer', 'pavucontrol', width=0.4, height=0.6, x=0.3, y=0.2, opacity=1),
+            DropDown('files', 'dolphin', width=0.8, height=0.8, x=0.1, y=0.1, opacity=1)
+        ])
+    )
+
+# SCRATCH PAD KEYBINDINGS
+scratch_keys = [
+    Key([mod2], "1", lazy.group["scratchpad"].dropdown_toggle("term")),
+    Key([mod2], "2", lazy.group["scratchpad"].dropdown_toggle("files")),
+    Key([mod2], "3", lazy.group["scratchpad"].dropdown_toggle("mixer")),
+    ]
+keys.extend(scratch_keys)
+
 # DEFINE COLORS
 def init_colors():
     return [
@@ -802,7 +818,7 @@ def assign_app_group(client):
     d = {}
     d[group_names[0]] = ["Chromium", "chromium"]
     d[group_names[1]] = ["Alacritty", "Alacritty"]
-    d[group_names[2]] = ["emacs""Emacs"]
+    d[group_names[2]] = ["emacs","Emacs"]
     d[group_names[3]] = ["vscodium", "VSCodium"]
     d[group_names[4]] = []
     d[group_names[5]] = ["Vlc", "vlc"]
